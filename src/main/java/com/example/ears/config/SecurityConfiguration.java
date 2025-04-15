@@ -34,11 +34,13 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
            .authorizeHttpRequests(authorize -> authorize
                    .requestMatchers("/auth/**").permitAll()
+                   .requestMatchers("/auth/login").permitAll()
                    .anyRequest().authenticated())
                .sessionManagement(session -> session
-                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-           .authenticationProvider(authenticationProvider)
-           .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authenticationProvider(authenticationProvider);
+           http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

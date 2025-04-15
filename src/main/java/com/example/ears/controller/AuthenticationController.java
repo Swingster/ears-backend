@@ -28,14 +28,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(registeredUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){
-        User authenticatedUser = authenticationService.authentication(loginUserDto);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpiration());
-        return ResponseEntity.ok(loginResponse);
-    }
-
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
         try {
@@ -55,4 +47,14 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+   @PostMapping("/login")
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto){
+        System.out.println("Login request received: " + loginUserDto.getEmail());
+        User authenticatedUser = authenticationService.authentication(loginUserDto);
+        String jwtToken = jwtService.generateToken(authenticatedUser);
+        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpiration());
+        return ResponseEntity.ok(loginResponse);
+    }
+
 }

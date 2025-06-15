@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -67,11 +68,16 @@ public class SecurityConfiguration {
 
                    // Admin endpoints (if you add admin role later)
                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .cors(Customizer.withDefaults())
+           .authorizeHttpRequests(authorize -> authorize
+                   .requestMatchers("/auth/**").permitAll()
+                   .requestMatchers("/auth/login").permitAll()
                    .anyRequest().authenticated())
                .sessionManagement(session -> session
-                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-           .authenticationProvider(authenticationProvider)
-           .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authenticationProvider(authenticationProvider);
+           http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -85,6 +91,7 @@ public class SecurityConfiguration {
                 "https://yourapp.com",      // Production frontend
                 "https://www.yourapp.com"   // Production frontend with www
         ));;
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 "Authorization",

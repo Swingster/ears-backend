@@ -1,5 +1,6 @@
 package com.example.ears.model;
 
+import com.example.ears.dto.AccountType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,9 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_type", nullable = false)
+    private AccountType accountType;
     private boolean enabled;
     @Column(name = "verification_code")
     private String verificationCode;
@@ -33,10 +37,11 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, AccountType accountType) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.accountType = accountType; // Default account type
     }
 
     @Override

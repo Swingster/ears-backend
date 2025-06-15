@@ -1,6 +1,7 @@
 package com.example.ears.responses;
 
 import com.example.ears.dto.UserProfileDto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class LoginResponse {
     private long expiresIn;
     private String accountType;
     private List<String> permissions;
+
     private UserProfileDto user;
 
     public LoginResponse(String token, long expiresIn) {
